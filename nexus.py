@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 from twilio.rest import Client
 from credentials import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TEXT_TO_NUMBER, TEXT_FROM_NUMBER 
 
-
 # Idea and details located here. I just added SMS capability
 # https://packetlife.net/blog/2019/aug/7/apis-real-life-snagging-global-entry-interview/
 
@@ -14,17 +13,16 @@ APPOINTMENTS_URL = "https://ttp.cbp.dhs.gov/schedulerapi/slots?orderBy=soonest&l
 
 # List of Global Entry locations
 LOCATION_IDS = {
-    "Blaine NEXUS And FAST Enrollment Center": 5220,
-    "SEAFO-Blaine, WA Nexus Enrollment Blitz 2024": 16764,
-    "Derby Line Enrollment Center": 5223
+    "Blaine NEXUS": 5220,
+    "SEAFO-Blaine": 16764,
 
 }
 
 # How often to run this check in seconds
-TIME_WAIT = 3600
+TIME_WAIT = 30
 
 # Number of days into the future to look for appointments
-DAYS_OUT = 60
+DAYS_OUT = 90
 
 # Dates
 now = datetime.now()
@@ -65,16 +63,17 @@ try:
                 appt_datetime = datetime.strptime(appointments[0]['startTimestamp'], '%Y-%m-%dT%H:%M')
                 if appointment_in_timeframe(now, future_date, appt_datetime):
                     message = "{}: Found an appointment at {}!".format(city, appointments[0]['startTimestamp'])
-                    try:
-                        sms_sid = send_text(TEXT_TO_NUMBER, TEXT_FROM_NUMBER, message, TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
-                        print(message, "Sent text successfully! {}".format(sms_sid))
-                    except Exception as e:
-                        print(e)
-                        print(message, "Failed to send text")
+                    print(message)
+                    # try:
+                    #     sms_sid = send_text(TEXT_TO_NUMBER, TEXT_FROM_NUMBER, message, TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+                    #     print(message, "Sent text successfully! {}".format(sms_sid))
+                    # except Exception as e:
+                    #     print(e)
+                    #     print(message, "Failed to send text")
                 else:
-                    print("{}: No appointments during the next {} days.".format(city, DAYS_OUT))
+                    print("{}: No appointments during the next {} days".format(city, DAYS_OUT))
             else:
-                print("{}: No appointments during the next {} days.".format(city, DAYS_OUT))
+                print("{}: No appointments during the next {} days".format(city, DAYS_OUT))
             time.sleep(1)
         time.sleep(TIME_WAIT)
 except KeyboardInterrupt:
