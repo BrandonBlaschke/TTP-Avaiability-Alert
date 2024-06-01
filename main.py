@@ -12,14 +12,14 @@ APPOINTMENTS_URL = "https://ttp.cbp.dhs.gov/schedulerapi/slots?orderBy=soonest&l
 # Full list: https://ttp.cbp.dhs.gov/schedulerapi/slots/asLocations?limit=100
 LOCATION_IDS = {
     "Blaine NEXUS": 5220,
-    "SEAFO-Blaine": 16764,
+    "SEAFO-Blaine": 16764
 }
 
 # How often to run this check in seconds
 TIME_WAIT = 30
 
 # Number of days into the future to look for appointments
-DAYS_OUT = 90
+DAYS_OUT = 360
 
 # Dates
 now = datetime.now()
@@ -32,7 +32,7 @@ def check_appointments(city, id):
     return appointments
 
 def appointment_in_timeframe(now, future_date, appointment_date):
-    return now <= appt_datetime <= future_date
+    return now <= appointment_date <= future_date
 
 if __name__ == "__main__":
     try:
