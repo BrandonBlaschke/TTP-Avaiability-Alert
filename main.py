@@ -11,7 +11,7 @@ APPOINTMENTS_URL = "https://ttp.cbp.dhs.gov/schedulerapi/slots?orderBy=soonest&l
 # List of Global Entry locations
 # Full list: https://ttp.cbp.dhs.gov/schedulerapi/slots/asLocations?limit=100
 LOCATION_IDS = {
-    "Blaine NEXUS": 5220,
+    "Blaine NEXUS": 5020,
     "SEAFO-Blaine": 16764
 }
 
@@ -19,7 +19,7 @@ LOCATION_IDS = {
 TIME_WAIT = 30
 
 # Number of days into the future to look for appointments
-DAYS_OUT = 360
+DAYS_OUT = 4
 
 # Dates
 now = datetime.now()
@@ -51,7 +51,7 @@ if __name__ == "__main__":
                         # sendSMS(message)
                         postTweet(message)
                     else:
-                        print("{}: No appointments available".format(city, DAYS_OUT))
+                        print("{}: No appointments available in {} days".format(city, DAYS_OUT))
                 else:
                     print("{}: No appointments available".format(city, DAYS_OUT))
                 time.sleep(1)
