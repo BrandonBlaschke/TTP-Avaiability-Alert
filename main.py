@@ -16,10 +16,12 @@ LOCATION_IDS = {
 }
 
 # How often to run this check in seconds
-TIME_WAIT = 5
+TIME_WAIT = 3
 
 # Number of days into the future to look for appointments
 DAYS_OUT = 360
+
+WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
 # Dates
 now = datetime.now()
@@ -46,7 +48,7 @@ if __name__ == "__main__":
                 if appointments:
                     appt_datetime = datetime.strptime(appointments[0]['startTimestamp'], '%Y-%m-%dT%H:%M')
                     if appointment_in_timeframe(now, future_date, appt_datetime):
-                        message = "{}: Available appointment on {}.\nGo to link https://ttp.cbp.dhs.gov/".format(city, appointments[0]['startTimestamp'])
+                        message = "{}: Available appointment on {} {}.\nGo to link https://ttp.cbp.dhs.gov/".format(city, WEEKDAYS[appt_datetime.weekday()], appointments[0]['startTimestamp'])
                         print(message)
                         sendMessage(message)
                     else:
