@@ -2,8 +2,8 @@ import requests
 import time
 import sys
 from datetime import datetime, timedelta
-#from twilioNotifier import sendSMS
-#from twitterNotifier import postTweet
+from twilioNotifier import sendSMS
+from twitterNotifier import postTweet
 from telegramNotifier import sendMessage
 
 # API URL
@@ -12,16 +12,15 @@ APPOINTMENTS_URL = "https://ttp.cbp.dhs.gov/schedulerapi/slots?orderBy=soonest&l
 # List of Global Entry locations
 # Full list: https://ttp.cbp.dhs.gov/schedulerapi/slots/asLocations?limit=100
 LOCATION_IDS = {
-    "Blaine NEXUS": 5020
+    "Blaine NEXUS": 5020,
+    "SEAFO-Blaine": 16764
 }
 
 # How often to run this check in seconds
-TIME_WAIT = 3
+TIME_WAIT = 30
 
 # Number of days into the future to look for appointments
-DAYS_OUT = 360
-
-WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+DAYS_OUT = 4
 
 # Dates
 now = datetime.now()
@@ -48,9 +47,10 @@ if __name__ == "__main__":
                 if appointments:
                     appt_datetime = datetime.strptime(appointments[0]['startTimestamp'], '%Y-%m-%dT%H:%M')
                     if appointment_in_timeframe(now, future_date, appt_datetime):
-                        message = "{}: Available appointment on {} {}.\nGo to link https://ttp.cbp.dhs.gov/".format(city, WEEKDAYS[appt_datetime.weekday()], appointments[0]['startTimestamp'])
+                        message = "{}: Available appointment on {}".format(city, appointments[0]['startTimestamp'])
                         print(message)
-                        sendMessage(message)
+                        # sendSMS(message)
+                        postTweet(message)
                     else:
                         print("{}: No appointments available in {} days".format(city, DAYS_OUT))
                 else:
